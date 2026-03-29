@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoaderCircle, Plus } from "lucide-react";
-import { useId, useState, useTransition } from "react";
+import { useId, useRef, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,7 @@ type ProductFormProps = {
 export function ProductForm({ disabled = false, onCreate }: Readonly<ProductFormProps>) {
   const nameId = useId();
   const quantityId = useId();
+  const formRef = useRef<HTMLFormElement>(null);
   const [message, setMessage] = useState<ActionFeedback | null>(null);
   const [isPending, startTransition] = useTransition();
   const form = useForm<CreateProductInput>({
@@ -38,10 +39,12 @@ export function ProductForm({ disabled = false, onCreate }: Readonly<ProductForm
       setMessage(result);
 
       if (result.success) {
+        formRef.current?.reset();
         form.reset({
           name: "",
           quantity: "",
         });
+        form.clearErrors();
       }
     });
   });
@@ -57,7 +60,7 @@ export function ProductForm({ disabled = false, onCreate }: Readonly<ProductForm
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form className="space-y-4" onSubmit={handleSubmit}>
+        <form ref={formRef} className="space-y-4" onSubmit={handleSubmit}>
           <div className="space-y-2">
             <Label className="text-zinc-200" htmlFor={nameId}>
               Produto

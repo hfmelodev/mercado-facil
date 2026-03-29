@@ -45,6 +45,7 @@ export function ProductItem({ busy, product, onDelete, onTogglePurchased }: Read
             className="shrink-0"
             disabled={busy}
             size="icon"
+            type="button"
             variant="ghost"
             onClick={() => onDelete(product.id)}
           >
