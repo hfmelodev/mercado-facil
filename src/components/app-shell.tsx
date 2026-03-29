@@ -5,11 +5,7 @@ import { Search } from "lucide-react";
 import { useDeferredValue, useState } from "react";
 import { toast } from "sonner";
 
-import {
-  createProductAction,
-  deleteProductAction,
-  setProductPurchasedAction,
-} from "@/actions/products";
+import { createProductAction, deleteProductAction, setProductPurchasedAction } from "@/actions/products";
 import { ListSummary } from "@/components/list-summary";
 import { Logo } from "@/components/logo";
 import { ProductForm } from "@/components/product-form";
@@ -18,17 +14,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { productsQueryKey } from "@/lib/query";
-import {
-  type ActionFeedback,
-  type ProductItem,
-  type ProductsResponse,
-  sortProducts,
-  splitProducts,
-} from "@/lib/types";
+import { type ActionFeedback, type ProductItem, type ProductsResponse, sortProducts, splitProducts } from "@/lib/types";
 import type { CreateProductInput } from "@/validations/product";
 
 type AppShellProps = {
   databaseConfigured: boolean;
+  initialLoadError: string | null;
   initialProducts: ProductItem[];
 };
 
@@ -72,10 +63,7 @@ async function createProductMutation(values: CreateProductInput) {
   };
 }
 
-async function toggleProductMutation(input: {
-  id: string;
-  isPurchased: boolean;
-}) {
+async function toggleProductMutation(input: { id: string; isPurchased: boolean }) {
   const result = await setProductPurchasedAction(input);
 
   if (!result.success || !result.data) {
@@ -102,10 +90,7 @@ async function deleteProductMutation(input: { id: string }) {
   };
 }
 
-export function AppShell({
-  databaseConfigured,
-  initialProducts,
-}: Readonly<AppShellProps>) {
+export function AppShell({ databaseConfigured, initialLoadError, initialProducts }: Readonly<AppShellProps>) {
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [busyIds, setBusyIds] = useState<string[]>([]);
@@ -119,21 +104,20 @@ export function AppShell({
     enabled: databaseConfigured,
   });
 
+  const runtimeLoadError = productsQuery.error?.message ?? null;
+  const dataWarning = initialLoadError ?? runtimeLoadError;
+
   const products = productsQuery.data ?? [];
-  const filteredProducts = products.filter((product) =>
-    matchesSearch(product, normalizedSearch),
-  );
+  const filteredProducts = products.filter(product => matchesSearch(product, normalizedSearch));
   const { pending, purchased } = splitProducts(filteredProducts);
   const allCounts = splitProducts(products);
 
   function markBusy(id: string) {
-    setBusyIds((current) =>
-      current.includes(id) ? current : [...current, id],
-    );
+    setBusyIds(current => (current.includes(id) ? current : [...current, id]));
   }
 
   function unmarkBusy(id: string) {
-    setBusyIds((current) => current.filter((value) => value !== id));
+    setBusyIds(current => current.filter(value => value !== id));
   }
 
   const createMutation = useMutation({
@@ -141,10 +125,7 @@ export function AppShell({
     onSuccess(result) {
       const createdProduct = result.data;
 
-      queryClient.setQueryData<ProductItem[]>(
-        productsQueryKey,
-        (current = []) => sortProducts([createdProduct, ...current]),
-      );
+      queryClient.setQueryData<ProductItem[]>(productsQueryKey, (current = []) => sortProducts([createdProduct, ...current]));
       toast.success(result.message);
     },
     onError() {
@@ -159,19 +140,12 @@ export function AppShell({
       markBusy(parsed.id);
       await queryClient.cancelQueries({ queryKey: productsQueryKey });
 
-      const previousProducts =
-        queryClient.getQueryData<ProductItem[]>(productsQueryKey);
+      const previousProducts = queryClient.getQueryData<ProductItem[]>(productsQueryKey);
 
-      queryClient.setQueryData<ProductItem[]>(
-        productsQueryKey,
-        (current = []) =>
-          sortProducts(
-            current.map((product) =>
-              product.id === parsed.id
-                ? { ...product, isPurchased: parsed.isPurchased }
-                : product,
-            ),
-          ),
+      queryClient.setQueryData<ProductItem[]>(productsQueryKey, (current = []) =>
+        sortProducts(
+          current.map(product => (product.id === parsed.id ? { ...product, isPurchased: parsed.isPurchased } : product))
+        )
       );
 
       return {
@@ -189,14 +163,8 @@ export function AppShell({
     onSuccess(result) {
       const updatedProduct = result.data;
 
-      queryClient.setQueryData<ProductItem[]>(
-        productsQueryKey,
-        (current = []) =>
-          sortProducts(
-            current.map((product) =>
-              product.id === updatedProduct.id ? updatedProduct : product,
-            ),
-          ),
+      queryClient.setQueryData<ProductItem[]>(productsQueryKey, (current = []) =>
+        sortProducts(current.map(product => (product.id === updatedProduct.id ? updatedProduct : product)))
       );
       toast.success(result.message);
     },
@@ -214,12 +182,10 @@ export function AppShell({
       markBusy(parsed.id);
       await queryClient.cancelQueries({ queryKey: productsQueryKey });
 
-      const previousProducts =
-        queryClient.getQueryData<ProductItem[]>(productsQueryKey);
+      const previousProducts = queryClient.getQueryData<ProductItem[]>(productsQueryKey);
 
-      queryClient.setQueryData<ProductItem[]>(
-        productsQueryKey,
-        (current = []) => current.filter((product) => product.id !== parsed.id),
+      queryClient.setQueryData<ProductItem[]>(productsQueryKey, (current = []) =>
+        current.filter(product => product.id !== parsed.id)
       );
 
       return {
@@ -244,9 +210,7 @@ export function AppShell({
     },
   });
 
-  async function handleCreate(
-    values: CreateProductInput,
-  ): Promise<ActionFeedback> {
+  async function handleCreate(values: CreateProductInput): Promise<ActionFeedback> {
     try {
       const result = await createMutation.mutateAsync(values);
       return {
@@ -256,10 +220,7 @@ export function AppShell({
     } catch (error) {
       return {
         success: false,
-        message:
-          error instanceof Error
-            ? error.message
-            : "Não foi possível adicionar o produto.",
+        message: error instanceof Error ? error.message : "Não foi possível adicionar o produto.",
       };
     }
   }
@@ -283,19 +244,14 @@ export function AppShell({
           <Logo />
           <div className="space-y-3">
             <h1 className="max-w-2xl font-semibold text-3xl text-zinc-950 tracking-tight sm:text-4xl">
-              Sua lista de supermercado pronta para cadastrar em casa e marcar
-              no corredor da loja.
+              Sua lista de supermercado pronta para cadastrar em casa e marcar no corredor da loja.
             </h1>
             <p className="max-w-xl text-sm text-zinc-600 leading-6 sm:text-base">
-              Um fluxo simples para duas pessoas: uma adiciona os produtos e a
-              outra acompanha tudo pelo celular sem depender de mensagens no
-              WhatsApp.
+              Um fluxo simples para duas pessoas: uma adiciona os produtos e a outra acompanha tudo pelo celular sem depender de
+              mensagens no WhatsApp.
             </p>
           </div>
-          <ListSummary
-            pendingCount={allCounts.pending.length}
-            purchasedCount={allCounts.purchased.length}
-          />
+          <ListSummary pendingCount={allCounts.pending.length} purchasedCount={allCounts.purchased.length} />
 
           <Card className="border-zinc-200/80 bg-zinc-50/80">
             <CardContent className="space-y-3 p-4">
@@ -303,7 +259,7 @@ export function AppShell({
                 <Search className="-translate-y-1/2 pointer-events-none absolute top-1/2 left-4 size-4 text-zinc-400" />
                 <Input
                   value={search}
-                  onChange={(event) => setSearch(event.target.value)}
+                  onChange={event => setSearch(event.target.value)}
                   placeholder="Buscar produto ou quantidade"
                   className="pl-10"
                 />
@@ -315,33 +271,28 @@ export function AppShell({
           {!databaseConfigured ? (
             <Card className="border-amber-200 bg-amber-50">
               <CardContent className="space-y-2 p-4">
-                <p className="font-medium text-amber-900 text-sm">
-                  Banco ainda não configurado
-                </p>
+                <p className="font-medium text-amber-900 text-sm">Banco ainda não configurado</p>
                 <p className="text-amber-800 text-sm leading-6">
-                  Crie um arquivo{" "}
-                  <code className="rounded bg-amber-100 px-1.5 py-0.5 text-xs">
-                    .env
-                  </code>{" "}
-                  com a variavel{" "}
-                  <code className="rounded bg-amber-100 px-1.5 py-0.5 text-xs">
-                    DATABASE_URL
-                  </code>{" "}
-                  usando o exemplo do arquivo{" "}
-                  <code className="rounded bg-amber-100 px-1.5 py-0.5 text-xs">
-                    .env.example
-                  </code>
-                  .
+                  Crie um arquivo <code className="rounded bg-amber-100 px-1.5 py-0.5 text-xs">.env</code> com a variavel{" "}
+                  <code className="rounded bg-amber-100 px-1.5 py-0.5 text-xs">DATABASE_URL</code> usando o exemplo do arquivo{" "}
+                  <code className="rounded bg-amber-100 px-1.5 py-0.5 text-xs">.env.example</code>.
+                </p>
+              </CardContent>
+            </Card>
+          ) : dataWarning ? (
+            <Card className="border-amber-200 bg-amber-50">
+              <CardContent className="space-y-2 p-4">
+                <p className="font-medium text-amber-900 text-sm">Nao foi possivel acessar o banco agora</p>
+                <p className="text-amber-800 text-sm leading-6">
+                  Verifique a `DATABASE_URL`, rode as migrations no ambiente de producao e confira os logs do Coolify. Detalhe
+                  atual: {dataWarning}
                 </p>
               </CardContent>
             </Card>
           ) : null}
         </div>
 
-        <ProductForm
-          disabled={!databaseConfigured || createMutation.isPending}
-          onCreate={handleCreate}
-        />
+        <ProductForm disabled={!databaseConfigured || createMutation.isPending} onCreate={handleCreate} />
       </section>
 
       <section className="grid gap-6 lg:grid-cols-[1fr_auto_1fr] lg:items-start">
@@ -352,9 +303,7 @@ export function AppShell({
               ? "Nenhum item pendente corresponde a busca atual."
               : "Adicione seu primeiro item acima para comecar a lista."
           }
-          emptyTitle={
-            normalizedSearch ? "Nada encontrado" : "Nenhum item pendente"
-          }
+          emptyTitle={normalizedSearch ? "Nada encontrado" : "Nenhum item pendente"}
           pendingIds={busyIds}
           products={pending}
           title="Pendentes"

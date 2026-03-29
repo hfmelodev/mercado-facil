@@ -14,6 +14,12 @@ export type ActionFeedback = {
 
 export type ProductsResponse = {
   products: ProductItem[];
+  error?: string;
+};
+
+export type ProductsLoadResult = {
+  products: ProductItem[];
+  error: string | null;
 };
 
 export function sortProducts(products: ProductItem[]) {
@@ -22,15 +28,13 @@ export function sortProducts(products: ProductItem[]) {
       return Number(left.isPurchased) - Number(right.isPurchased);
     }
 
-    return (
-      new Date(left.createdAt).getTime() - new Date(right.createdAt).getTime()
-    );
+    return new Date(left.createdAt).getTime() - new Date(right.createdAt).getTime();
   });
 }
 
 export function splitProducts(products: ProductItem[]) {
-  const pending = products.filter((product) => !product.isPurchased);
-  const purchased = products.filter((product) => product.isPurchased);
+  const pending = products.filter(product => !product.isPurchased);
+  const purchased = products.filter(product => product.isPurchased);
 
   return { pending, purchased };
 }

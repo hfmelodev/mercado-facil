@@ -43,12 +43,7 @@ export function BrandIcon({ size }: Readonly<BrandIconProps>) {
           strokeLinecap="round"
           strokeLinejoin="round"
         />
-        <path
-          d="M9 13.5H15"
-          stroke="white"
-          strokeWidth={strokeWidth / 20}
-          strokeLinecap="round"
-        />
+        <path d="M9 13.5H15" stroke="white" strokeWidth={strokeWidth / 20} strokeLinecap="round" />
       </svg>
     </div>
   );

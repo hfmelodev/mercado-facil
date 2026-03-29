@@ -1,7 +1,7 @@
 import type { Product } from "@prisma/client";
 
 import { db } from "@/lib/db";
-import { type ProductItem, sortProducts } from "@/lib/types";
+import { type ProductItem, type ProductsLoadResult, sortProducts } from "@/lib/types";
 import { createProductSchema } from "@/validations/product";
 
 function serializeProduct(product: Product): ProductItem {
@@ -29,6 +29,33 @@ export async function listProducts() {
   });
 
   return products.map(serializeProduct);
+}
+
+export async function listProductsSafe(): Promise<ProductsLoadResult> {
+  if (!isDatabaseConfigured()) {
+    return {
+      products: [],
+      error: null,
+    };
+  }
+
+  try {
+    const products = await listProducts();
+
+    return {
+      products,
+      error: null,
+    };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Nao foi possivel carregar os produtos.";
+
+    console.error("[products:list]", error);
+
+    return {
+      products: [],
+      error: message,
+    };
+  }
 }
 
 export async function createProduct(input: unknown) {

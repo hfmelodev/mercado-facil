@@ -5,10 +5,7 @@ import { Check } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
-export function Checkbox({
-  className,
-  ...props
-}: Readonly<CheckboxPrimitive.CheckboxProps>) {
+export function Checkbox({ className, ...props }: Readonly<CheckboxPrimitive.CheckboxProps>) {
   return (
     <CheckboxPrimitive.Root
       className={cn(
@@ -16,7 +13,7 @@ export function Checkbox({
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2",
         "data-[state=checked]:border-emerald-500 data-[state=checked]:bg-emerald-500 data-[state=checked]:text-white",
         "disabled:cursor-not-allowed disabled:opacity-50",
-        className,
+        className
       )}
       {...props}
     >

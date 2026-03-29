@@ -1,9 +1,19 @@
 import { NextResponse } from "next/server";
 
-import { listProducts } from "@/lib/products";
+import { listProductsSafe } from "@/lib/products";
 
 export async function GET() {
-  const products = await listProducts();
+  const { products, error } = await listProductsSafe();
+
+  if (error) {
+    return NextResponse.json(
+      {
+        products,
+        error,
+      },
+      { status: 503 }
+    );
+  }
 
   return NextResponse.json({
     products,

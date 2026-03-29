@@ -15,7 +15,7 @@ export function EmptyState({ title, description }: Readonly<EmptyStateProps>) {
           <PackageOpen className="size-5" />
         </div>
         <div className="space-y-1">
-          <h3 className="text-sm font-semibold text-zinc-900">{title}</h3>
+          <h3 className="font-semibold text-sm text-zinc-900">{title}</h3>
           <p className="text-sm text-zinc-500">{description}</p>
         </div>
       </CardContent>

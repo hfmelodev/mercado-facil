@@ -4,8 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Mercado Facil",
     short_name: "Mercado",
-    description:
-      "Lista de compras compartilhada para cadastrar em casa e marcar no supermercado.",
+    description: "Lista de compras compartilhada para cadastrar em casa e marcar no supermercado.",
     start_url: "/",
     scope: "/",
     display: "standalone",

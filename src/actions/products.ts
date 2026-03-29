@@ -3,17 +3,9 @@
 import { revalidatePath } from "next/cache";
 import { ZodError } from "zod";
 
-import {
-  createProduct,
-  isDatabaseConfigured,
-  removeProduct,
-  setProductPurchased,
-} from "@/lib/products";
+import { createProduct, isDatabaseConfigured, removeProduct, setProductPurchased } from "@/lib/products";
 import type { ActionFeedback, ProductItem } from "@/lib/types";
-import {
-  deleteProductSchema,
-  updatePurchasedSchema,
-} from "@/validations/product";
+import { deleteProductSchema, updatePurchasedSchema } from "@/validations/product";
 
 type ActionResult<T = undefined> = ActionFeedback & {
   data?: T;
@@ -22,8 +14,7 @@ type ActionResult<T = undefined> = ActionFeedback & {
 function configurationError() {
   return {
     success: false,
-    message:
-      "Configure a variável DATABASE_URL para salvar a lista no PostgreSQL.",
+    message: "Configure a variável DATABASE_URL para salvar a lista no PostgreSQL.",
   } satisfies ActionFeedback;
 }
 
@@ -39,9 +30,7 @@ function getErrorMessage(error: unknown) {
   return "Ocorreu um erro inesperado.";
 }
 
-export async function createProductAction(
-  input: unknown,
-): Promise<ActionResult<ProductItem>> {
+export async function createProductAction(input: unknown): Promise<ActionResult<ProductItem>> {
   if (!isDatabaseConfigured()) {
     return configurationError();
   }
@@ -63,9 +52,7 @@ export async function createProductAction(
   }
 }
 
-export async function setProductPurchasedAction(
-  input: unknown,
-): Promise<ActionResult<ProductItem>> {
+export async function setProductPurchasedAction(input: unknown): Promise<ActionResult<ProductItem>> {
   if (!isDatabaseConfigured()) {
     return configurationError();
   }
@@ -77,9 +64,7 @@ export async function setProductPurchasedAction(
 
     return {
       success: true,
-      message: data.isPurchased
-        ? "Item movido para o carrinho."
-        : "Item voltou para pendentes.",
+      message: data.isPurchased ? "Item movido para o carrinho." : "Item voltou para pendentes.",
       data: product,
     };
   } catch (error) {
@@ -90,9 +75,7 @@ export async function setProductPurchasedAction(
   }
 }
 
-export async function deleteProductAction(
-  input: unknown,
-): Promise<ActionResult> {
+export async function deleteProductAction(input: unknown): Promise<ActionResult> {
   if (!isDatabaseConfigured()) {
     return configurationError();
   }

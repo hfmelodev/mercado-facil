@@ -10,11 +10,7 @@ function emptyToUndefined(value: string | undefined) {
 }
 
 export const createProductSchema = z.object({
-  name: z
-    .string()
-    .trim()
-    .min(1, "Informe o nome do produto.")
-    .max(80, "Use no máximo 80 caracteres."),
+  name: z.string().trim().min(1, "Informe o nome do produto.").max(80, "Use no máximo 80 caracteres."),
   quantity: z.string().optional().transform(emptyToUndefined),
 });
 

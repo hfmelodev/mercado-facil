@@ -34,7 +34,7 @@ export function ProductSection({
         {products.length === 0 ? (
           <EmptyState title={emptyTitle} description={emptyDescription} />
         ) : (
-          products.map((product) => (
+          products.map(product => (
             <ProductCard
               key={product.id}
               busy={pendingIds.includes(product.id)}

@@ -18,7 +18,7 @@ export function Providers({ children }: Readonly<ProvidersProps>) {
             refetchOnWindowFocus: false,
           },
         },
-      }),
+      })
   );
 
   return (

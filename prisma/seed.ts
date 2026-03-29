@@ -21,7 +21,7 @@ main()
   .then(async () => {
     await prisma.$disconnect();
   })
-  .catch(async (error) => {
+  .catch(async error => {
     console.error("Seed falhou", error);
     await prisma.$disconnect();
     process.exit(1);

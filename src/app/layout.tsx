@@ -17,8 +17,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   applicationName: "Mercado Fácil",
   title: "Mercado Fácil",
-  description:
-    "Lista de compras compartilhada para cadastrar em casa e marcar no supermercado.",
+  description: "Lista de compras compartilhada para cadastrar em casa e marcar no supermercado.",
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
@@ -48,9 +47,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} bg-background text-foreground antialiased`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} bg-background text-foreground antialiased`}>
         <PwaRegister />
         <Providers>{children}</Providers>
       </body>
