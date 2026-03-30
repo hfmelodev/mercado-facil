@@ -284,8 +284,9 @@ export function AppShell({ databaseConfigured, initialLoadError, initialProducts
               <CardContent className="space-y-2 p-4">
                 <p className="font-medium text-amber-900 text-sm">Nao foi possivel acessar o banco agora</p>
                 <p className="text-amber-800 text-sm leading-6">
-                  Verifique a `DATABASE_URL`, rode as migrations no ambiente de producao e confira os logs do Coolify. Detalhe
-                  atual: {dataWarning}
+                  Verifique a <code className="rounded bg-amber-100 px-1.5 py-0.5 text-xs">DATABASE_URL</code>, confirme que o
+                  deploy executou <code className="rounded bg-amber-100 px-1.5 py-0.5 text-xs">prisma migrate deploy</code> e
+                  revise os logs da Vercel. Detalhe atual: {dataWarning}
                 </p>
               </CardContent>
             </Card>

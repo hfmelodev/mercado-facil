@@ -17,15 +17,15 @@ Aplicativo full stack em Next.js para gerenciar uma lista de compras compartilha
 - `pnpm install`
 - `pnpm dev`
 - `pnpm lint`
-- `pnpm format`
 - `pnpm prisma:generate`
-- `pnpm prisma:migrate`
+- `pnpm prisma:migrate:deploy`
+- `pnpm prisma:push`
 - `pnpm prisma:seed`
 
 ## Banco
 1. Copie `.env.example` para `.env`
 2. Ajuste `DATABASE_URL`
-3. Rode `pnpm prisma:migrate`
+3. Rode `pnpm prisma:migrate:deploy`
 4. Rode `pnpm prisma:seed`
 5. Rode `pnpm dev`
 
@@ -49,9 +49,10 @@ Aplicativo full stack em Next.js para gerenciar uma lista de compras compartilha
 - Depois de instalado, o app abre em modo standalone, sem barra do navegador, como um aplicativo
 
 ## Deploy em producao
-1. Crie o arquivo `.env` com `DATABASE_URL`
-2. Gere a migration e aplique no banco
-3. Build local: `pnpm build`
-4. Docker: `docker compose -f docker-compose.prod.yml up --build -d`
+1. Configure `DATABASE_URL` no ambiente da Vercel apontando para o PostgreSQL de producao
+2. Garanta que as migrations versionadas estejam em `prisma/migrations`
+3. O `pnpm build` agora executa `prisma migrate deploy` antes do `next build`
+4. Se o banco ja existe e a tabela `Product` ainda nao foi criada, rode manualmente `pnpm prisma:migrate:deploy`
+5. Depois redeploye o projeto na Vercel
 
 O projeto usa `output: "standalone"` no Next.js para facilitar a imagem de producao.

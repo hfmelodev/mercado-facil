@@ -1,4 +1,4 @@
-import type { Product } from "@prisma/client";
+import { Prisma, type Product } from "@prisma/client";
 
 import { db } from "@/lib/db";
 import { type ProductItem, type ProductsLoadResult, sortProducts } from "@/lib/types";
@@ -17,6 +17,28 @@ function serializeProduct(product: Product): ProductItem {
 
 export function isDatabaseConfigured() {
   return Boolean(process.env.DATABASE_URL);
+}
+
+export function getProductPersistenceErrorMessage(error: unknown) {
+  if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    if (error.code === "P2021") {
+      return "O banco está acessível, mas a tabela de produtos ainda não existe. Rode `prisma migrate deploy` no banco de produção.";
+    }
+
+    if (error.code === "P2022") {
+      return "O schema do banco está desatualizado em produção. Rode `prisma migrate deploy` para alinhar as colunas esperadas.";
+    }
+  }
+
+  if (error instanceof Prisma.PrismaClientInitializationError) {
+    return "Não foi possível iniciar a conexão com o PostgreSQL. Revise a `DATABASE_URL` e as credenciais do ambiente de produção.";
+  }
+
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  return "Nao foi possivel carregar os produtos.";
 }
 
 export async function listProducts() {
@@ -47,7 +69,7 @@ export async function listProductsSafe(): Promise<ProductsLoadResult> {
       error: null,
     };
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Nao foi possivel carregar os produtos.";
+    const message = getProductPersistenceErrorMessage(error);
 
     console.error("[products:list]", error);
 

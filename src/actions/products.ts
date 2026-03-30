@@ -3,7 +3,13 @@
 import { revalidatePath } from "next/cache";
 import { ZodError } from "zod";
 
-import { createProduct, isDatabaseConfigured, removeProduct, setProductPurchased } from "@/lib/products";
+import {
+  createProduct,
+  getProductPersistenceErrorMessage,
+  isDatabaseConfigured,
+  removeProduct,
+  setProductPurchased,
+} from "@/lib/products";
 import type { ActionFeedback, ProductItem } from "@/lib/types";
 import { deleteProductSchema, updatePurchasedSchema } from "@/validations/product";
 
@@ -24,7 +30,7 @@ function getErrorMessage(error: unknown) {
   }
 
   if (error instanceof Error) {
-    return error.message;
+    return getProductPersistenceErrorMessage(error);
   }
 
   return "Ocorreu um erro inesperado.";
