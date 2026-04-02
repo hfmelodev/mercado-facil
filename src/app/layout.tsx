@@ -19,11 +19,6 @@ export const metadata: Metadata = {
   title: "Mercado Fácil",
   description: "Lista de compras compartilhada para cadastrar em casa e marcar no supermercado.",
   manifest: "/manifest.webmanifest",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "default",
-    title: "Mercado Facil",
-  },
   formatDetection: {
     telephone: false,
   },

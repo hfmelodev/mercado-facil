@@ -242,7 +242,7 @@ export function AppShell({ databaseConfigured, initialLoadError, initialProducts
       <section className="grid gap-4 rounded-4xl border border-white/70 bg-white/90 p-4 shadow-xl shadow-zinc-200/40 backdrop-blur sm:p-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
         <div className="space-y-5">
           <Logo />
-          <div className="space-y-3">
+          {/* <div className="space-y-3">
             <h1 className="max-w-2xl font-semibold text-3xl text-zinc-950 tracking-tight sm:text-4xl">
               Sua lista de supermercado pronta para cadastrar em casa e marcar no corredor da loja.
             </h1>
@@ -250,7 +250,7 @@ export function AppShell({ databaseConfigured, initialLoadError, initialProducts
               Um fluxo simples para duas pessoas: uma adiciona os produtos e a outra acompanha tudo pelo celular sem depender de
               mensagens no WhatsApp.
             </p>
-          </div>
+          </div> */}
           <ListSummary pendingCount={allCounts.pending.length} purchasedCount={allCounts.purchased.length} />
 
           <Card className="border-zinc-200/80 bg-zinc-50/80">

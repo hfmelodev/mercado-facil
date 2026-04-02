@@ -28,7 +28,6 @@ export function BrandIcon({ size }: Readonly<BrandIconProps>) {
         aria-label="Mercado Facil"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <title>Mercado Facil</title>
         <path
           d="M4 10L6.5 19H17.5L20 10H4Z"
           stroke="white"
